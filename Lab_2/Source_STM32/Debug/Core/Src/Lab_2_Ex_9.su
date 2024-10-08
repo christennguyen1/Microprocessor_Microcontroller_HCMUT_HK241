@@ -1,0 +1,5 @@
+Lab_2_Ex_9.c:15:6:init_exercise9	8	static
+Lab_2_Ex_9.c:35:6:display_col_9	16	static
+Lab_2_Ex_9.c:47:6:display_row_9	16	static
+Lab_2_Ex_9.c:62:6:updateLEDMatrix_9	16	static
+Lab_2_Ex_9.c:95:6:exercise9_run	8	static

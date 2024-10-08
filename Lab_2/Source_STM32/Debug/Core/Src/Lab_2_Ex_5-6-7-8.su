@@ -1,0 +1,5 @@
+Lab_2_Ex_5-6-7-8.c:20:6:init_exercise5	8	static
+Lab_2_Ex_5-6-7-8.c:36:6:displayClock	8	static
+Lab_2_Ex_5-6-7-8.c:66:6:updateClockBuffer	8	static
+Lab_2_Ex_5-6-7-8.c:75:6:updateLed	8	static
+Lab_2_Ex_5-6-7-8.c:80:6:exercise5_run	8	static
