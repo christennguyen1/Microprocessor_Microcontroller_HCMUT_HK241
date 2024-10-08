@@ -1,0 +1,5 @@
+Lab_1_Ex_10.c:17:6:clearAllClock	8	static
+Lab_1_Ex_10.c:32:6:setNumberOnClock	16	static
+Lab_1_Ex_10.c:74:6:clearNumberOnClock	16	static
+Lab_1_Ex_10.c:118:6:init_exercise10	8	static
+Lab_1_Ex_10.c:123:6:exercise10_run	8	static
