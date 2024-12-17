@@ -48,14 +48,6 @@ void updateClockBuffer(int lane_1, int lane_2){
 	displayClock();
 }
 
-
-//void updateLed(int lane_1, int lane_2){
-//	if(timer_flag[2] == 1){
-//		updateClockBuffer(lane_1, lane_2);
-//		setTimer0(2, TIME_BLINK);
-//	}
-//}
-
 void clearAll(){
 	GPIOB->ODR = 0xFFFF;
 	HAL_GPIO_WritePin(GPIOA, EN0_Pin, GPIO_PIN_SET);
