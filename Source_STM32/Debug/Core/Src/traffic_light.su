@@ -1,0 +1,4 @@
+traffic_light.c:12:6:traffic_light1	16	static
+traffic_light.c:44:6:traffic_light2	16	static
+traffic_light.c:77:6:fsm_automatic_traffic_light	8	static
+traffic_light.c:159:6:updateLed	8	static
