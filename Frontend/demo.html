@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 API Control</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    input[type="number"] {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+      width: 100px;
+    }
+    .status {
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>ESP32 API Control</h1>
+  <p>Control your ESP32 with the buttons below:</p>
+
+  <div>
+    <h3>Start</h3>
+    <button onclick="sendRequest('/start')">Turn start ON</button>
+  </div>
+
+  <div>
+    <h3>Restart</h3>
+    <button onclick="sendRequest('/restart')">RESTART</button>
+  </div>
+
+  <div>
+    <h3>MANUAL 1 (Lane 1: red - lane 2: green)</h3>
+    <button onclick="sendRequest('/manual1')">MANUAL 1</button>
+  </div>
+
+  <div>
+    <h3>MANUAL 2 (Lane 1: green - lane 2: red)</h3>
+    <button onclick="sendRequest('/manual2')">MANUAL 2</button>
+  </div>
+
+  <div>
+    <h3>MANUAL 3 (Lane 1: orange - lane 2: orange)</h3>
+    <button onclick="sendRequest('/manual3')">MANUAL 3</button>
+  </div>
+
+  <hr>
+  <h3>Set LED Values with Logic</h3>
+  <div>
+    <label for="redValue">Red Value:</label>
+    <input type="number" id="redValue" placeholder="Enter Red">
+    <br>
+    <label for="yellowValue">Yellow Value:</label>
+    <input type="number" id="yellowValue" placeholder="Enter Yellow">
+    <br>
+    <label for="greenValue">Green Value:</label>
+    <input type="number" id="greenValue" placeholder="Enter Green">
+    <br>
+    <button onclick="submitValues()">Submit</button>
+    <button onclick="resetToDefault()">Clear</button> <!-- Nút Clear -->
+  </div>
+
+  <div class="status" id="status">Status: Waiting for action...</div>
+  <div class="error" id="error"></div>
+
+  <script>
+    const esp32Ip = "http://172.20.10.3"; // IP của ESP32
+
+    function sendRequest(endpoint) {
+      fetch(esp32Ip + endpoint)
+        .then(response => {
+          if (response.ok) {
+            document.getElementById('status').innerText = `Status: ${endpoint} executed successfully.`;
+            document.getElementById('error').innerText = "";
+          } else {
+            document.getElementById('status').innerText = `Status: Error executing ${endpoint}.`;
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          document.getElementById('status').innerText = "Status: Unable to reach ESP32.";
+        });
+    }
+
+    function submitValues() {
+      const red = parseInt(document.getElementById('redValue').value);
+      const yellow = parseInt(document.getElementById('yellowValue').value);
+      const green = parseInt(document.getElementById('greenValue').value);
+
+      if (isNaN(red) || isNaN(yellow) || isNaN(green)) {
+        document.getElementById('error').innerText = "Please enter valid numbers for all fields.";
+        return;
+      }
+
+      if (green !== red - yellow) {
+        document.getElementById('error').innerText = "Error: Time Green value must equal Time Red value minus Time Yellow value.";
+        return;
+      }
+
+      if (red < yellow) {
+        document.getElementById('error').innerText = "Error: Time Red value less than Time Yellow value.";
+        return;
+      }
+
+      const endpoint = `/?red=${red}&yellow=${yellow}&green=${green}`;
+      sendRequest(endpoint);
+    }
+    function resetToDefault() {
+        document.getElementById('redValue').value = "";     // Xóa giá trị Red
+        document.getElementById('yellowValue').value = "";  // Xóa giá trị Yellow
+        document.getElementById('greenValue').value = "";   // Xóa giá trị Green
+        document.getElementById('status').innerText = "Status: Waiting for action..."; // Đặt lại trạng thái
+        document.getElementById('error').innerText = "";    // Xóa thông báo lỗi
+    }
+  </script>
+</body>
+</html>

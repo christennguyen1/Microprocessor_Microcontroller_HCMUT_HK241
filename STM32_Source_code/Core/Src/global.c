@@ -7,6 +7,10 @@
 
 #include"global.h"
 
+char rec,null;
+char buffer[100];
+int i = 0;
+
 int status0 = 0;
 int status1 = 0;
 int status2 = 0;
@@ -22,4 +26,4 @@ int time_mid = 0;
 int time_lane1 = 0;
 int time_lane2 = 0;
 
-uint16_t BUTTON[NUM_BUTTONS] = {BUTTON1_Pin, BUTTON2_Pin, BUTTON3_Pin};
+uint16_t BUTTON[NUM_BUTTONS] = {BUTTON1_Pin, BUTTON2_Pin, BUTTON3_Pin, BUTTON4_Pin};

@@ -1,5 +1,4 @@
 "./Core/Src/button.o"
-"./Core/Src/constant.o"
 "./Core/Src/display7segment.o"
 "./Core/Src/fsm_automatic.o"
 "./Core/Src/fsm_manual.o"
@@ -29,3 +28,4 @@
 "./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.o"
 "./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o"
 "./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o"
+"./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.o"

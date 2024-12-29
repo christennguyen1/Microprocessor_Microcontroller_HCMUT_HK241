@@ -52,6 +52,27 @@ void fsm_manual_run(){
 			}
 
 			//increase time value of red led
+			if(isButton1Pressed(3) == 1){
+				time_mid = 1;
+				status0 = MODE21;
+				clearAll();
+			}
+//			if(isButton1Pressed(1) == 1){
+//				//	Ban dang o che do dieu khien tu dong, lam on chuyen sang che do set up thoi gian
+//			}
+//
+//						//confirm time value of red led
+//			if(isButton1Pressed(2) == 1){
+//				//	Ban dang o che do dieu khien tu dong, lam on chuyen sang che do set up thoi gian
+//			}
+			break;
+		case MODE21:
+			traffic_light1(AUTO_RED1);
+			traffic_light2(AUTO_RED2);
+			time_lane1 = MODE21 % 10;
+			time_lane2 = time_mid;
+			updateLed();
+			//increase time value of red led
 			if(isButton1Pressed(1) == 1){
 				time_mid = time_mid + 1;
 				if( time_mid >= 100 ){
@@ -65,6 +86,7 @@ void fsm_manual_run(){
 				TIME_RED = time_mid * 1000;
 				time_mid = 1;
 				clearAll();
+				status0 = MODE2;
 			}
 			break;
 		case MODE3:
@@ -80,6 +102,30 @@ void fsm_manual_run(){
 			}
 
 			//increase time value of amber led
+			if(isButton1Pressed(3) == 1){
+				time_mid = 1;
+				status0 = MODE31;
+				clearAll();
+			}
+
+			//confirm time value of amber led
+			//			if(isButton1Pressed(1) == 1){
+			//				//	Ban dang o che do dieu khien tu dong, lam on chuyen sang che do set up thoi gian
+			//			}
+			//
+			//						//confirm time value of red led
+			//			if(isButton1Pressed(2) == 1){
+			//				//	Ban dang o che do dieu khien tu dong, lam on chuyen sang che do set up thoi gian
+			//			}
+			//			break;
+			break;
+		case MODE31:
+			traffic_light1(AUTO_AMBER1);
+			traffic_light2(AUTO_AMBER2);
+			time_lane1 = MODE31 % 10;
+			time_lane2 = time_mid;
+			updateLed();
+			//increase time value of red led
 			if(isButton1Pressed(1) == 1){
 				time_mid = time_mid + 1;
 				if( time_mid >= 100 ){
@@ -88,10 +134,12 @@ void fsm_manual_run(){
 				}
 			}
 
-			//confirm time value of amber led
+					//confirm time value of red led
 			if(isButton1Pressed(2) == 1){
 				TIME_YELLOW = time_mid * 1000;
 				time_mid = 1;
+				clearAll();
+				status0 = MODE3;
 			}
 			break;
 		case MODE4:
@@ -107,7 +155,30 @@ void fsm_manual_run(){
 				lcd_send_cmd (0x02);
 			}
 
-			//increase time value of green led
+			if(isButton1Pressed(3) == 1){
+				time_mid = 1;
+				status0 = MODE41;
+				clearAll();
+			}
+
+			//confirm time value of amber led
+			//			if(isButton1Pressed(1) == 1){
+			//				//	Ban dang o che do dieu khien tu dong, lam on chuyen sang che do set up thoi gian
+			//			}
+			//
+			//						//confirm time value of red led
+			//			if(isButton1Pressed(2) == 1){
+			//				//	Ban dang o che do dieu khien tu dong, lam on chuyen sang che do set up thoi gian
+			//			}
+			//			break;
+			break;
+		case MODE41:
+			traffic_light1(AUTO_GREEN1);
+			traffic_light2(AUTO_GREEN2);
+			time_lane1 = MODE41 % 10;
+			time_lane2 = time_mid;
+			updateLed();
+			//increase time value of red led
 			if(isButton1Pressed(1) == 1){
 				time_mid = time_mid + 1;
 				if( time_mid >= 100 ){
@@ -116,11 +187,12 @@ void fsm_manual_run(){
 				}
 			}
 
-			//confirm time value of green led
+					//confirm time value of red led
 			if(isButton1Pressed(2) == 1){
 				TIME_GREEN = time_mid * 1000;
 				time_mid = 1;
 				clearAll();
+				status0 = MODE4;
 			}
 			break;
 		default:

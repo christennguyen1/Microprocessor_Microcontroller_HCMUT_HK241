@@ -27,6 +27,9 @@
 #include "fsm_manual.h"
 #include "fsm_automatic.h"
 #include "i2c-lcd.h"
+#include "string.h"
+#include <stdio.h>
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +51,8 @@ I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim2;
 
+UART_HandleTypeDef huart2;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -57,12 +62,109 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
+uint8_t senddata[]="Hello STM ->ESP";
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	HAL_UART_Receive_IT(&huart2, (uint8_t *)&rec, 1);
+	if (rec != 13 && rec != '\r' && rec != '\n') { // Loại b�? ký tự Enter hoặc xuống dòng
+	    buffer[i++] = rec; // Thêm ký tự hợp lệ vào buffer
+	    if (i >= sizeof(buffer) - 1) { // Tránh tràn buffer
+	      i = sizeof(buffer) - 1;
+	    }
+	  }
+
+  if (rec == 13) { // Khi nhận được Enter (Carriage Return)
+    i = 0; // Reset chỉ số để nhận chuỗi mới
+    rec = '\0';
+
+    int len = strlen(buffer);
+    while (len > 0 && (buffer[len - 1] == '\r' || buffer[len - 1] == '\n')) {
+      buffer[--len] = '\0';
+    }
+
+    HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen((char *)buffer), 100);
+    if (strcmp(buffer, "START") == 0) {
+    	      status0 = MODE1;
+    	      HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    	      setTimer0(3, 1010);
+    	      setTimer0(2, 10);
+    	      setTimer0(1, 1010);
+    	      setTimer0(0, 1010);
+    	      status1 = INIT_LED;
+    	      status2 = INIT_LED;
+    	      status0 = MODE1;
+    	      status3 = INIT_LED;
+    	      status4 = INIT_LED;
+    	      time_lane1 = MODE1 % 10;
+    	      time_lane2 = 0;
+    	      clearAll();
+    }
+    if (strcmp(buffer, "RESTART") == 0) {
+            clearAll();
+            lcd_send_cmd (0x80);
+            lcd_goto_XY(1,4);
+            status0 = INIT_BUTTON;
+    }
+    if (strcmp(buffer, "MANUAL1") == 0) {
+            clearAll();
+            lcd_send_cmd (0x80);
+            lcd_goto_XY(1,4);
+            status0 = INIT_BUTTON;
+            traffic_light1(AUTO_RED1);
+            traffic_light2(AUTO_GREEN2);
+            time_lane1 = 0;
+            time_lane2 = 0;
+    }
+    if (strcmp(buffer, "MANUAL2") == 0) {
+            clearAll();
+            lcd_send_cmd (0x80);
+            lcd_goto_XY(1,4);
+            status0 = INIT_BUTTON;
+            traffic_light1(AUTO_GREEN1);
+            traffic_light2(AUTO_RED2);
+            time_lane1 = 0;
+            time_lane2 = 0;
+    }
+    if (strcmp(buffer, "MANUAL3") == 0) {
+            clearAll();
+            lcd_send_cmd (0x80);
+            lcd_goto_XY(1,4);
+            status0 = INIT_BUTTON;
+            traffic_light1(AUTO_AMBER1);
+            traffic_light2(AUTO_AMBER2);
+            time_lane1 = 0;
+            time_lane2 = 0;
+    }
+    if (strncmp(buffer, "Set_up!", 7) == 0) {
+        char *token = strtok(buffer, "!");
+        int index = 0;
+
+        while (token != NULL) {
+          if (index == 1) TIME_RED = atoi(token) * 1000;
+          if (index == 2) TIME_YELLOW = atoi(token) * 1000;
+          if (index == 3) TIME_GREEN = atoi(token) * 1000;
+          token = strtok(NULL, "!");
+          index++;
+        }
+        clearAll();
+        lcd_send_cmd (0x80);
+        lcd_goto_XY(1,4);
+        status0 = INIT_BUTTON;
+    }
+
+    // Xóa buffer
+    memset(buffer, 0, sizeof(buffer));
+  }
+
+  // Tiếp tục nhận dữ liệu
+}
 
 /* USER CODE END 0 */
 
@@ -96,8 +198,11 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   MX_I2C1_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
+  HAL_UART_Transmit(&huart2, senddata,sizeof(senddata),100);
+  HAL_UART_Receive_IT(&huart2,(uint8_t *)&rec,1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -108,8 +213,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-		fsm_automatic_run();
-		fsm_manual_run();
+	  fsm_automatic_run();
+	  fsm_manual_run();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -230,6 +335,39 @@ static void MX_TIM2_Init(void)
 }
 
 /**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 9600;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -241,6 +379,7 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED1_Pin|LED4_8_Pin|LED4_9_Pin, GPIO_PIN_RESET);
@@ -260,6 +399,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : BUTTON4_Pin */
+  GPIO_InitStruct.Pin = BUTTON4_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(BUTTON4_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED1_3_Pin LED1_5_Pin */
   GPIO_InitStruct.Pin = LED1_3_Pin|LED1_5_Pin;

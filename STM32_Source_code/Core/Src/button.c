@@ -49,7 +49,13 @@ void getKeyInput(){
 		KeyReg0[i] = KeyReg1[i];
 		KeyReg1[i] = KeyReg2[i];
 		// Add your key
-		KeyReg2[i] = HAL_GPIO_ReadPin(GPIOB, BUTTON[i]);
+		if(i == 3){
+			KeyReg2[i] = HAL_GPIO_ReadPin(GPIOC, BUTTON[i]);
+		}
+		else{
+			KeyReg2[i] = HAL_GPIO_ReadPin(GPIOB, BUTTON[i]);
+		}
+
 
 		if ((KeyReg1[i] == KeyReg0[i]) && (KeyReg1[i] == KeyReg2[i])){
 		    if (KeyReg2[i] != KeyReg3[i]){

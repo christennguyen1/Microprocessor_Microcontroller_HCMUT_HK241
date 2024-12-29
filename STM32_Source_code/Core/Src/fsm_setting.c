@@ -79,7 +79,7 @@ void counter_7segmen2(){
 				break;
 		}
 	}
-
+	updateClockBuffer(time_lane1, time_lane2);
 }
 
 

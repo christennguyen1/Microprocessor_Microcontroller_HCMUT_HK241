@@ -14,7 +14,7 @@
 
 #define INIT_LED 0
 #define INIT_BUTTON 0
-#define NUM_BUTTONS 3
+#define NUM_BUTTONS 4
 
 #define AUTO_RED1 1
 #define AUTO_GREEN1 2
@@ -26,8 +26,11 @@
 
 #define MODE1 11
 #define MODE2 12
-#define MODE3 13
-#define MODE4 14
+#define MODE21 13
+#define MODE3 14
+#define MODE31 15
+#define MODE4 16
+#define MODE41 17
 
 extern int status0;
 extern int status1;
@@ -45,5 +48,9 @@ extern int time_lane1;
 extern int time_lane2;
 
 uint16_t BUTTON[NUM_BUTTONS];
+
+extern char rec,null;
+extern char buffer[100];
+extern int i;
 
 #endif /* INC_GLOBAL_H_ */

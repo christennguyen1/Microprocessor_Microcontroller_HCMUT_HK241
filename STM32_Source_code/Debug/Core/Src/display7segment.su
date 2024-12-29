@@ -1,2 +1,2 @@
-display7segment.c:15:6:updateClockBuffer	24	static
-display7segment.c:30:6:clearAll	8	static
+display7segment.c:15:6:updateClockBuffer	32	static
+display7segment.c:44:6:clearAll	8	static

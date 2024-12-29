@@ -12,7 +12,7 @@
 void fsm_automatic_run(){
 	fsm_automatic_traffic_light();
 	fsm_automatic_run_segmen();
-	updateLed();
+//	updateLed();
 }
 
 
